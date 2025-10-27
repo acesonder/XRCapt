@@ -15,7 +15,13 @@ Thank you for your interest in contributing to XRCapt! This document provides gu
 
 1. **Fork the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/XRCapt.git
+   git clone https://github.com/acesonder/XRCapt.git
+   cd XRCapt
+   ```
+   
+   Or clone your fork:
+   ```bash
+   git clone https://github.com/<your-username>/XRCapt.git
    cd XRCapt
    ```
 

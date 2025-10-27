@@ -10,6 +10,7 @@
     "maxSimultaneousDetections": 5,
     "detectionIntervalMs": 1000,
     "similarityThreshold": 2.0,
+    "_comment_similarityThreshold": "Distance in meters - people within this distance are considered the same person",
     "mlModel": {
       "enabled": false,
       "provider": "mediapipe",

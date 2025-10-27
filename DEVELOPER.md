@@ -265,7 +265,8 @@ async findSimilarPerson(faceDescriptor) {
 1. **Use Web Speech API**:
 ```javascript
 startVoiceRecording(personId) {
-    const recognition = new webkitSpeechRecognition();
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
     
