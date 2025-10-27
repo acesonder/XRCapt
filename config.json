@@ -1,0 +1,98 @@
+{
+  "app": {
+    "name": "XRCapt",
+    "version": "1.0.0",
+    "description": "Mixed-reality person memory assistant for Meta Quest 3/3S"
+  },
+  "detection": {
+    "enabled": true,
+    "mode": "simulated",
+    "maxSimultaneousDetections": 5,
+    "detectionIntervalMs": 1000,
+    "similarityThreshold": 2.0,
+    "mlModel": {
+      "enabled": false,
+      "provider": "mediapipe",
+      "modelPath": "./models/pose_detection",
+      "confidence": 0.7
+    }
+  },
+  "hud": {
+    "colors": {
+      "new": "#2196F3",
+      "occasional": "#ff9800",
+      "frequent": "#f44336"
+    },
+    "thresholds": {
+      "newMax": 2,
+      "occasionalMax": 5
+    },
+    "canvasSize": {
+      "width": 512,
+      "height": 256
+    },
+    "scale": {
+      "width": 1,
+      "height": 0.5
+    },
+    "offset": {
+      "y": 0.3
+    }
+  },
+  "filters": {
+    "default": {
+      "showNew": true,
+      "showKnown": true,
+      "showFrequent": true,
+      "showNearby": true
+    },
+    "nearbyDistanceMeters": 8
+  },
+  "database": {
+    "name": "XRCaptDB",
+    "version": 1,
+    "stores": {
+      "persons": {
+        "keyPath": "id",
+        "indexes": [
+          "lastSeen",
+          "encounterCount",
+          "name"
+        ]
+      }
+    }
+  },
+  "ui": {
+    "memoryTrailDurationMs": 6000,
+    "debugOverlay": {
+      "enabled": true,
+      "defaultVisible": true
+    },
+    "filters": {
+      "enabled": true,
+      "defaultVisible": false
+    }
+  },
+  "input": {
+    "gamepad": {
+      "xButtonIndex": 4,
+      "aButtonIndex": 5,
+      "thumbstickXAxisIndex": 2,
+      "thumbstickYAxisIndex": 3,
+      "thumbstickDeadzone": 0.5
+    }
+  },
+  "privacy": {
+    "localStorageOnly": true,
+    "encryptionEnabled": false,
+    "autoDeleteAfterDays": null,
+    "exportEnabled": true
+  },
+  "features": {
+    "faceRecognition": false,
+    "voiceTranscription": false,
+    "spatialAudio": false,
+    "gestureControls": false,
+    "conversationHistory": false
+  }
+}
