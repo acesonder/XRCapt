@@ -1,0 +1,44 @@
+{
+  "name": "xr-memory-assistant",
+  "version": "1.0.0",
+  "description": "A mixed-reality memory assistant for Meta Quest 3/3S that helps you remember people you meet",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8000 -o",
+    "serve": "python3 -m http.server 8000",
+    "dev": "npx http-server -p 8000 -c-1",
+    "test": "echo 'No automated tests configured yet'",
+    "build": "echo 'No build process required - static files only'"
+  },
+  "keywords": [
+    "webxr",
+    "meta-quest",
+    "augmented-reality",
+    "passthrough",
+    "memory-assistant",
+    "person-tracking",
+    "threejs",
+    "vr",
+    "ar",
+    "mixed-reality"
+  ],
+  "author": "acesonder",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acesonder/XRCapt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/acesonder/XRCapt/issues"
+  },
+  "homepage": "https://github.com/acesonder/XRCapt#readme",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browser": {
+    "indexeddb": true,
+    "webxr": true
+  }
+}
