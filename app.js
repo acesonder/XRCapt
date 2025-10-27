@@ -196,6 +196,13 @@ class XRCaptApp {
                 document.getElementById('debugSession').textContent = 'Session: Ended';
                 document.getElementById('startScreen').style.display = 'flex';
                 document.getElementById('controls').classList.remove('active');
+                document.getElementById('debugOverlay').classList.remove('active');
+                
+                // Stop animation loop to prevent errors after session ends
+                this.renderer.setAnimationLoop(null);
+                
+                // Clear session reference
+                this.xrSession = null;
             });
             
             // Start animation loop
@@ -246,8 +253,14 @@ class XRCaptApp {
     onXRFrame(time, frame) {
         if (!frame) return;
         
+        // Check if XR session is still active
+        if (!this.xrSession) return;
+        
         const session = frame.session;
-        const pose = frame.getViewerPose(this.renderer.xr.getReferenceSpace());
+        const refSpace = this.renderer.xr.getReferenceSpace();
+        if (!refSpace) return;
+        
+        const pose = frame.getViewerPose(refSpace);
         
         if (pose) {
             // Update camera position
