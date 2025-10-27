@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection MR - Meta Quest 3S</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container { width: 100vw; height: 100vh; }
+
+        #startScreen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 1.5em;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 1.5em;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 900;
+        }
+
+        #controls.active { display: flex; }
+
+        #controls button {
+            padding: 12px 20px;
+            font-size: 1em;
+            background: rgba(16, 185, 129, 0.9);
+            border-radius: 8px;
+        }
+
+        #debugPanel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+            z-index: 850;
+            display: none;
+            max-width: 400px;
+        }
+
+        #debugPanel.active { display: block; }
+
+        #debugPanel h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        #debugPanel p {
+            margin: 5px 0;
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        #objectList {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 800;
+            display: none;
+            max-width: 300px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        #objectList.active { display: block; }
+
+        #objectList h3 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .object-item {
+            background: rgba(16, 185, 129, 0.2);
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #10b981;
+        }
+
+        .object-item h4 {
+            margin: 0 0 5px 0;
+            color: #fff;
+        }
+
+        .object-item p {
+            margin: 2px 0;
+            font-size: 0.85em;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>🎯 Object Detection MR</h1>
+        <p>Advanced mixed reality object detection for Meta Quest 3S. Detects cars, humans, animals, and landmarks in real-time.</p>
+        <button id="startButton">Start Detection</button>
+        <p id="statusText" style="margin-top: 20px; font-size: 0.9em;">Checking WebXR support...</p>
+    </div>
+
+    <div id="container"></div>
+
+    <div id="controls">
+        <button id="toggleObjects">📋 Object List</button>
+        <button id="toggleDebug">🐛 Debug</button>
+        <button id="exitButton">🚪 Exit</button>
+    </div>
+
+    <div id="objectList">
+        <h3>🎯 Detected Objects</h3>
+        <div id="objectListContent"></div>
+    </div>
+
+    <div id="debugPanel">
+        <h4>🐛 Debug Info</h4>
+        <p>Status: <span id="debugStatus">Initializing...</span></p>
+        <p>Detected: <span id="debugDetected">0</span> objects</p>
+        <p>FPS: <span id="debugFPS">0</span></p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" 
+            integrity="sha384-OLBgp1GsljhM2TJ+sbHjaiH9txEUvgdDTAzHv2P24donTt6/529l+9Ua0vFImLlb" 
+            crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+</body>
+</html>

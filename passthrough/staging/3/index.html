@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Statistics Tracker - Meta Quest 3S</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container { width: 100vw; height: 100vh; }
+
+        #startScreen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 1.5em;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 1.5em;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #d97706;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 900;
+        }
+
+        #controls.active { display: flex; }
+
+        #controls button {
+            padding: 12px 20px;
+            font-size: 1em;
+            background: rgba(245, 158, 11, 0.9);
+            border-radius: 8px;
+        }
+
+        #statsPanel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 850;
+            display: none;
+            max-width: 400px;
+        }
+
+        #statsPanel.active { display: block; }
+
+        #statsPanel h4 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #statsPanel .stat-item {
+            background: rgba(245, 158, 11, 0.2);
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        #statsPanel .stat-item h5 {
+            margin: 0 0 8px 0;
+            color: #fff;
+            font-size: 1.1em;
+        }
+
+        #statsPanel .stat-item p {
+            margin: 3px 0;
+            color: #ddd;
+            font-size: 0.9em;
+        }
+
+        #objectDetails {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 800;
+            display: none;
+            max-width: 350px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        #objectDetails.active { display: block; }
+
+        #objectDetails h3 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            background: rgba(16, 185, 129, 0.2);
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .detail-item:hover {
+            background: rgba(16, 185, 129, 0.3);
+            transform: translateX(5px);
+        }
+
+        .detail-item h4 {
+            margin: 0 0 8px 0;
+            color: #fff;
+        }
+
+        .detail-item p {
+            margin: 3px 0;
+            font-size: 0.85em;
+            color: #bbb;
+        }
+
+        .edit-button {
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: #10b981;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        .edit-button:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>📊 Object Statistics Tracker</h1>
+        <p>Track and analyze object encounters with detailed statistics including count, last seen time, location, and custom names.</p>
+        <button id="startButton">Start Tracking</button>
+        <p id="statusText" style="margin-top: 20px; font-size: 0.9em;">Checking WebXR support...</p>
+    </div>
+
+    <div id="container"></div>
+
+    <div id="controls">
+        <button id="toggleStats">📊 Statistics</button>
+        <button id="toggleDetails">📝 Object Details</button>
+        <button id="exitButton">🚪 Exit</button>
+    </div>
+
+    <div id="statsPanel">
+        <h4>📊 Session Statistics</h4>
+        <div id="statsContent"></div>
+    </div>
+
+    <div id="objectDetails">
+        <h3>📝 Tracked Objects</h3>
+        <div id="detailsContent"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" 
+            integrity="sha384-OLBgp1GsljhM2TJ+sbHjaiH9txEUvgdDTAzHv2P24donTt6/529l+9Ua0vFImLlb" 
+            crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+</body>
+</html>
