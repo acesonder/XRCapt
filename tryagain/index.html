@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XR Memory Assistant - Person Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074/camera_utils.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.min.js"></script>
+</head>
+<body>
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1>XR Memory Assistant</h1>
+            <p>A mixed-reality memory assistant for Meta Quest 3 / 3S</p>
+            <button id="start-xr-btn" class="primary-btn">Enter VR Mode</button>
+            <div class="info-text">
+                <p>✓ Track people you meet in real-world</p>
+                <p>✓ Visual tags with encounter history</p>
+                <p>✓ All data stored locally on your device</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Encounter History</h2>
+                <button id="close-dashboard" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="person-list" class="person-list">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="vr-overlay" class="hidden">
+        <div id="hud-info" class="hud-panel">
+            <div id="current-target-info"></div>
+            <div id="controls-hint">
+                Hold X/A + ← → to select person
+            </div>
+        </div>
+        <button id="open-dashboard-vr" class="vr-btn">
+            📋 History
+        </button>
+    </div>
+
+    <div id="error-message" class="error-toast hidden"></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

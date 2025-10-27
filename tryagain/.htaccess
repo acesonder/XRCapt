@@ -1,0 +1,94 @@
+# XR Memory Assistant - Apache Configuration
+# Place this file in your installation directory
+
+# Force HTTPS (Required for WebXR)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Set proper MIME types
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType application/json .json
+    AddType text/css .css
+    AddType text/html .html
+    AddType image/png .png
+    AddType image/jpeg .jpg .jpeg
+    AddType image/svg+xml .svg
+</IfModule>
+
+# Enable CORS for WebXR resources (if needed)
+<IfModule mod_headers.c>
+    # Allow cross-origin requests for resources
+    Header set Access-Control-Allow-Origin "*"
+    
+    # Security headers
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Feature Policy for WebXR
+    Header set Permissions-Policy "camera=*, microphone=*, geolocation=*, xr-spatial-tracking=*"
+</IfModule>
+
+# Enable compression for better performance
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Browser caching for static resources
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # HTML - no cache
+    ExpiresByType text/html "access plus 0 seconds"
+    
+    # CSS and JavaScript - 1 month
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    
+    # Images - 1 year
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    
+    # JSON - 1 day
+    ExpiresByType application/json "access plus 1 day"
+</IfModule>
+
+# Disable directory browsing for security
+Options -Indexes
+
+# Custom error pages (uncomment and create files if desired)
+# ErrorDocument 404 /404.html
+# ErrorDocument 500 /500.html
+
+# Protect sensitive files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevent access to .git directory
+<DirectoryMatch "\.git">
+    Order deny,allow
+    Deny from all
+</DirectoryMatch>
+
+# Character encoding
+AddDefaultCharset UTF-8
+
+# ETags for caching
+FileETag MTime Size
+
+# Allow Web Workers and Service Workers (if implemented in future)
+<FilesMatch "\.(js|json)$">
+    Header set Service-Worker-Allowed "/"
+</FilesMatch>
