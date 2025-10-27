@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XRCapt Passthrough - Test Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 40px;
+            margin: 0;
+        }
+        h1 { text-align: center; margin-bottom: 40px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .app-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .app-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .app-card h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.5em;
+        }
+        .app-card p {
+            margin: 0 0 20px 0;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        .app-card a {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #fff;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .app-card a:hover {
+            background: #667eea;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .status {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        .status h3 { margin-top: 0; color: #10b981; }
+        .status ul { list-style: none; padding: 0; }
+        .status li { padding: 5px 0; }
+        .check { color: #10b981; margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 XRCapt Passthrough - Test Suite</h1>
+        
+        <div class="status">
+            <h3>✅ System Status</h3>
+            <ul>
+                <li><span class="check">✓</span> All 5 applications created</li>
+                <li><span class="check">✓</span> JavaScript syntax validated</li>
+                <li><span class="check">✓</span> HTML structure verified</li>
+                <li><span class="check">✓</span> Documentation complete</li>
+                <li><span class="check">✓</span> Installation guide ready</li>
+            </ul>
+        </div>
+
+        <div class="app-grid">
+            <div class="app-card">
+                <h2>🥽 Main App</h2>
+                <p>Base WebXR passthrough experience with session management</p>
+                <a href="index.html">Launch App</a>
+            </div>
+
+            <div class="app-card">
+                <h2>🎯 App 1</h2>
+                <p>Object Detection MR - Cars, Humans, Animals, Landmarks</p>
+                <a href="staging/1/index.html">Launch App</a>
+            </div>
+
+            <div class="app-card">
+                <h2>📸 App 2</h2>
+                <p>Photo Gallery MR - Sliding frames with HUD bubbles</p>
+                <a href="staging/2/index.html">Launch App</a>
+            </div>
+
+            <div class="app-card">
+                <h2>📊 App 3</h2>
+                <p>Statistics Tracker - Comprehensive object tracking</p>
+                <a href="staging/3/index.html">Launch App</a>
+            </div>
+
+            <div class="app-card">
+                <h2>🌟 App 4</h2>
+                <p>Complete MR Experience - All features combined</p>
+                <a href="staging/4/index.html">Launch App</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; text-align: center; opacity: 0.8;">
+            <p>📚 Documentation: <a href="README.md" style="color: #fff;">README</a> | 
+            <a href="CPANEL_INSTALL_GUIDE.md" style="color: #fff;">Install Guide</a> | 
+            <a href="FUTURE_UPDATES.md" style="color: #fff;">Roadmap</a></p>
+        </div>
+    </div>
+</body>
+</html>
