@@ -167,6 +167,24 @@ class XRCaptApp {
     }
     
     // ===== WEBXR SESSION MANAGEMENT =====
+    cleanupXRSession() {
+        this.debugLog('Cleaning up XR session...', 'info');
+        
+        // Update UI
+        document.getElementById('debugSession').textContent = 'Session: Ended';
+        document.getElementById('startScreen').style.display = 'flex';
+        document.getElementById('controls').classList.remove('active');
+        document.getElementById('debugOverlay').classList.remove('active');
+        
+        // Stop animation loop to prevent errors after session ends
+        if (this.renderer) {
+            this.renderer.setAnimationLoop(null);
+        }
+        
+        // Clear session reference
+        this.xrSession = null;
+    }
+    
     async startXR() {
         try {
             this.debugLog('Starting XR session...', 'info');
@@ -192,10 +210,7 @@ class XRCaptApp {
             await this.renderer.xr.setSession(this.xrSession);
             
             this.xrSession.addEventListener('end', () => {
-                this.debugLog('XR session ended', 'info');
-                document.getElementById('debugSession').textContent = 'Session: Ended';
-                document.getElementById('startScreen').style.display = 'flex';
-                document.getElementById('controls').classList.remove('active');
+                this.cleanupXRSession();
             });
             
             // Start animation loop
@@ -246,8 +261,13 @@ class XRCaptApp {
     onXRFrame(time, frame) {
         if (!frame) return;
         
-        const session = frame.session;
-        const pose = frame.getViewerPose(this.renderer.xr.getReferenceSpace());
+        // Check if XR session is still active
+        if (!this.xrSession) return;
+        
+        const refSpace = this.renderer.xr.getReferenceSpace();
+        if (!refSpace) return;
+        
+        const pose = frame.getViewerPose(refSpace);
         
         if (pose) {
             // Update camera position
@@ -255,7 +275,7 @@ class XRCaptApp {
             this.camera.quaternion.copy(pose.transform.orientation);
             
             // Process gamepad input
-            this.processInput(session);
+            this.processInput(frame.session);
             
             // Update HUD positions
             this.updateHUDPositions();
