@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete MR Experience - Meta Quest 3S</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container { width: 100vw; height: 100vh; }
+
+        #startScreen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 0.3em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            margin-bottom: 1em;
+            opacity: 0.95;
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+            text-align: center;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        button {
+            padding: 22px 45px;
+            font-size: 1.6em;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 900;
+        }
+
+        #controls.active { display: flex; }
+
+        #controls button {
+            padding: 10px 18px;
+            font-size: 0.95em;
+            background: rgba(139, 92, 246, 0.9);
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        #dashboard {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 700px;
+            max-height: 85vh;
+            background: rgba(15, 15, 30, 0.95);
+            border: 3px solid #8b5cf6;
+            border-radius: 15px;
+            padding: 25px;
+            display: none;
+            z-index: 950;
+            overflow-y: auto;
+        }
+
+        #dashboard.active { display: block; }
+
+        #dashboard h2 {
+            margin-top: 0;
+            color: #8b5cf6;
+            border-bottom: 3px solid #8b5cf6;
+            padding-bottom: 12px;
+            font-size: 1.8em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            border-bottom: 2px solid #444;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .object-card {
+            background: rgba(139, 92, 246, 0.15);
+            margin: 12px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .object-card h3 {
+            margin: 0 0 10px 0;
+            color: #fff;
+            font-size: 1.3em;
+        }
+
+        .object-card p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            color: #ccc;
+            text-align: left;
+        }
+
+        .object-card button {
+            margin: 8px 5px 0 0;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            background: #8b5cf6;
+            border-radius: 6px;
+        }
+
+        #closeButton {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ef4444;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        #statsOverlay {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 18px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            z-index: 850;
+            display: none;
+            max-width: 380px;
+            border: 2px solid #8b5cf6;
+        }
+
+        #statsOverlay.active { display: block; }
+
+        #statsOverlay h4 {
+            color: #8b5cf6;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        #statsOverlay p {
+            margin: 6px 0;
+            color: #ddd;
+            font-size: 0.95em;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>🌟 Complete MR Experience</h1>
+        <div class="subtitle">Full-Featured Mixed Reality for Meta Quest 3S</div>
+        <p>
+            The ultimate mixed reality application combining object detection, photo galleries,
+            statistics tracking, and HUD overlays. Detect objects, save photos, track encounters,
+            and customize your AR experience with full data privacy.
+        </p>
+        <button id="startButton">🚀 Launch Complete MR</button>
+        <p id="statusText" style="margin-top: 20px; font-size: 0.95em;">Checking WebXR support...</p>
+    </div>
+
+    <div id="container"></div>
+
+    <div id="controls">
+        <button id="captureButton">📷 Capture</button>
+        <button id="dashboardButton">📊 Dashboard</button>
+        <button id="toggleStats">📈 Stats</button>
+        <button id="exitButton">🚪 Exit</button>
+    </div>
+
+    <div id="dashboard">
+        <button id="closeButton">✕</button>
+        <h2>🎯 MR Dashboard</h2>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="objects">Objects</button>
+            <button class="tab-button" data-tab="photos">Photos</button>
+            <button class="tab-button" data-tab="statistics">Statistics</button>
+        </div>
+
+        <div id="objectsTab" class="tab-content active">
+            <div id="objectsList"></div>
+        </div>
+
+        <div id="photosTab" class="tab-content">
+            <div id="photosList"></div>
+        </div>
+
+        <div id="statisticsTab" class="tab-content">
+            <div id="statisticsContent"></div>
+        </div>
+    </div>
+
+    <div id="statsOverlay">
+        <h4>📊 Live Statistics</h4>
+        <p>Objects Detected: <span id="statObjects">0</span></p>
+        <p>Photos Captured: <span id="statPhotos">0</span></p>
+        <p>Session Time: <span id="statTime">0s</span></p>
+        <p>Active HUDs: <span id="statHUDs">0</span></p>
+        <p>FPS: <span id="statFPS">0</span></p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
