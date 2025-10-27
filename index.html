@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XRCapt - Person Memory Assistant</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Start Screen */
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            z-index: 1000;
+        }
+
+        #startScreen h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #startScreen p {
+            font-size: 1.2em;
+            margin-bottom: 2em;
+            text-align: center;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+
+        #startButton {
+            padding: 20px 40px;
+            font-size: 1.5em;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        #startButton:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        #startButton:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        /* Dashboard Modal */
+        #dashboard {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            max-height: 80%;
+            background: rgba(20, 20, 40, 0.95);
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+            z-index: 900;
+            overflow-y: auto;
+        }
+
+        #dashboard h2 {
+            margin-top: 0;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        .person-entry {
+            background: rgba(40, 40, 60, 0.8);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .person-entry.frequent {
+            border-left-color: #f44336;
+        }
+
+        .person-entry.occasional {
+            border-left-color: #ff9800;
+        }
+
+        .person-entry h3 {
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+
+        .person-entry p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #bbb;
+        }
+
+        .person-entry button {
+            margin: 5px 5px 0 0;
+            padding: 5px 10px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .person-entry button:hover {
+            background: #45a049;
+        }
+
+        #closeButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f44336;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Debug Overlay */
+        #debugOverlay {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-width: 400px;
+            z-index: 800;
+            display: none;
+        }
+
+        #debugOverlay.active {
+            display: block;
+        }
+
+        #debugOverlay h4 {
+            margin: 0 0 10px 0;
+            color: #4CAF50;
+        }
+
+        #debugOverlay p {
+            margin: 3px 0;
+            color: #aaa;
+        }
+
+        /* Filter Panel */
+        #filterPanel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(20, 20, 40, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 700;
+            display: none;
+        }
+
+        #filterPanel.active {
+            display: block;
+        }
+
+        #filterPanel h4 {
+            margin: 0 0 10px 0;
+            color: #4CAF50;
+        }
+
+        #filterPanel label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        #filterPanel input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        /* Control Buttons */
+        #controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 700;
+            display: none;
+        }
+
+        #controls.active {
+            display: block;
+        }
+
+        #controls button {
+            display: block;
+            margin: 5px 0;
+            padding: 10px 15px;
+            background: rgba(76, 175, 80, 0.9);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        #controls button:hover {
+            background: rgba(69, 160, 73, 1);
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>🔍 XRCapt</h1>
+        <p>A mixed-reality memory assistant that lets you visually "tag" people you meet in the real world using passthrough AR on the Meta Quest 3 / 3S.</p>
+        <button id="startButton">Enter AR Mode</button>
+        <p id="statusText" style="margin-top: 20px; font-size: 0.9em; color: #ccc;"></p>
+    </div>
+
+    <div id="container"></div>
+
+    <!-- Dashboard Modal -->
+    <div id="dashboard">
+        <button id="closeButton">✕</button>
+        <h2>👥 Encounter History</h2>
+        <div id="personList"></div>
+    </div>
+
+    <!-- Debug Overlay -->
+    <div id="debugOverlay">
+        <h4>🐛 Debug Info</h4>
+        <p id="debugWebXR">WebXR: Checking...</p>
+        <p id="debugSession">Session: Not Started</p>
+        <p id="debugError">Errors: None</p>
+        <p id="debugDetections">Detections: 0</p>
+    </div>
+
+    <!-- Filter Panel -->
+    <div id="filterPanel">
+        <h4>🔍 Smart Filters</h4>
+        <label>
+            <input type="checkbox" id="filterNew" checked> Show New (&lt;2 encounters)
+        </label>
+        <label>
+            <input type="checkbox" id="filterKnown" checked> Show Known (3-5)
+        </label>
+        <label>
+            <input type="checkbox" id="filterFrequent" checked> Show Frequent (&gt;5)
+        </label>
+        <label>
+            <input type="checkbox" id="filterNearby" checked> Show Nearby (&lt;8m)
+        </label>
+    </div>
+
+    <!-- Control Buttons -->
+    <div id="controls">
+        <button id="dashboardButton">📋 Dashboard</button>
+        <button id="toggleDebug">🐛 Debug</button>
+        <button id="toggleFilter">🔍 Filters</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
